@@ -41,18 +41,18 @@ with open(pypoll_csv, 'r') as csvfile:
     
     
     
-# I accidentally overrode this file with an incomplete file last minute. the analysis.
-# The txt file has the original output from the original data set
+# I accidentally overrode this file with an incomplete file last minute.
+# I did have the correct print out before
 
 output_file = os.path.join("analysis.txt")
 
 # #  Open the output file
 with open(output_file, "w", newline="") as datafile:
     writer = csv.writer(datafile)
-
+ 
 #     # Write the header row
-    writer.writerow("Election Results")
-    writer.writerow('---------------')
+    writer.writerows("Election Results")
+    writer.writerows("------------")
     writer.writerows(f'Total Vote: {tot_vote}')
-    writer.writerows('-------------')
+    writer.writerows("------------")
     writer.writerows(f'Winner: {winner}')
