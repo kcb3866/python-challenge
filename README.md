@@ -2,7 +2,7 @@
 
 ## PyBank
 
-* In this challenge, I am creating a Python script for analyzing the financial records of my company using the data provided. The dataset is composed of two columns: `Date` and `Profit/Losses`. 
+* In this challenge, I am creating a Python script for analyzing the financial records of my company using the data provided.  
 
 * Your task is to create a Python script that analyzes the records to calculate each of the following:
 
