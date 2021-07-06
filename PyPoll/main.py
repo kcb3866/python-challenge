@@ -3,56 +3,88 @@ import csv
 
 pypoll_csv = os.path.join("", 'Resources', 'election_data.csv')
 
-candidates_dict={}
+max_vote = 0
+tot_vote = 0
+winner = ""
 
-print("Election Results")
-print("--------------")
+candidates_votes={}
+
+candidate_opt = []
+
+# print("Election Results")
+# print("--------------")
 
 with open(pypoll_csv, 'r') as csvfile:
     csv_reader=csv.reader(csvfile, delimiter=',')
     header = next(csv_reader)
             
 
-    for row in csvfile:
-        na=row[2]
-        if na in candidates_dict:
-            candidates_dict[na] = candidates_dict[na] + 1
+    for row in csv_reader:
+
+        tot_vote = tot_vote + 1
+
+        name=row[2]
+        if name in candidate_opt:
+            
+            candidates_votes[name] = candidates_votes[name] + 1
         else:
-            candidates_dict[na] = 1
-    print(f'Candidates: {candidates_dict}')
-    print('----------------------')
+            candidate_opt.append(name)
+            candidates_votes[name] = 0
 
-    max_vote = 0
-    tot_vote = 0
-    winner = ""
-    for k,v in candidates_dict.items():
-      max_vote = v
-      tot_vote += max_vote
-      winner = k
-
-    print(f'Total Vote: {tot_vote}')
-    print("-----------------")
-    print(f'Winner: {winner}')
-
-
-
-
+    # print(f'Candidates: {candidates_dict}')
+    # print('----------------------')
 
     
-    
-    
-# I accidentally overrode this file with an incomplete file last minute.
-# I did have the correct print out before
+    # for k,v in candidates_dict.items():
+    #   max_vote = v
+    #   tot_vote += max_vote
+    #   winner = k
+
+    # print(f'Total Vote: {tot_vote}')
+    # print("-----------------")
+    # print(f'Winner: {winner}')
+
+
+
+
+
 
 output_file = os.path.join("analysis.txt")
 
 # #  Open the output file
-with open(output_file, "w", newline="") as datafile:
-    writer = csv.writer(datafile)
- 
-#     # Write the header row
-    writer.writerows("Election Results")
-    writer.writerows("------------")
-    writer.writerows(f'Total Vote: {tot_vote}')
-    writer.writerows("------------")
-    writer.writerows(f'Winner: {winner}')
+with open(output_file, "w") as txt_file:
+
+    election_results = (
+        f"\n\nElection Results:\n"
+        f"----------------------\n"
+        f"Total Votes: {tot_vote}\n"
+        f"-----------------------\n"
+    )
+
+    print(election_results, end="")
+
+    txt_file.write(election_results)
+    
+    # determing the vote count and percentage   
+    for candidate in candidates_votes:
+        votes = candidates_votes.get(candidate)
+        vote_pct = float(votes) / float(tot_vote) * 100
+
+        # determine winning vote count and candidate
+        if (votes > max_vote):
+            max_vote = votes
+            winner = candidate
+
+        # Print each candidate's voter count and percentage
+        voter_output = f"{candidate}: {vote_pct: .3f}% ({votes})\n"
+        print(voter_output)
+
+        txt_file.write(voter_output)
+    
+    candidate_summary = (
+        f"--------------------\n"
+        f"Winner: {winner}\n"
+        f"---------------------\n"
+    )
+
+    txt_file.write(candidate_summary)
