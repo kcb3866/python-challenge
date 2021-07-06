@@ -49,7 +49,7 @@ with open(pypoll_csv, 'r') as csvfile:
 
 
 
-output_file = os.path.join("analysis.txt")
+output_file = os.path.join("election_analysis.txt")
 
 # #  Open the output file
 with open(output_file, "w") as txt_file:

@@ -1,69 +1,68 @@
 import csv
 import os
 
-pybank_csv = os.path.join("", "", 'budget_data.csv')
-pl_dict=[]
-months=[]
-pl_chg = []
+pybank_csv = os.path.join("Resources", 'budget_data.csv')
 
-print("Financial Analysis")
-print("--------------")
+months_change = []
+net_change_list = []
 
 tot_months = 0
 tot_profits = 0
-inc_chg = 0
-dec_chg = 0
+inc_chg = ["", 0]
+dec_chg = ["", 9999999999999]
 
-with open(pybank_csv, 'r') as csvfile:
+with open(pybank_csv, "r") as csvfile:
     csv_reader=csv.reader(csvfile, delimiter=',')
     header = next(csv_reader) 
 
-    for row in csvfile:
+    # Extract the first row to avoid appending to net_change
+    first_row = next(csv_reader)
+    tot_months += 1
+    tot_profits += int(first_row[1])
+    prev_net = int(first_row[1])
+
+    for row in csv_reader:
+       # track  the total 
        tot_months += 1
-       tot_profits = tot_profits + int(row[1])
-       months.append(row[0])
-       pl_dict.append(row[1])
+       tot_profits += int(row[1])
     
-    for x in range(len(pl_dict)):
-        change = int(pl_dict[x]) - int(pl_dict[x - 1])
-        pl_chg.append(change) 
-        inc_chg = max(pl_chg)
-        dec_chg = min(pl_chg)
+    #    track the net change
+       net_change = int(row[1]) - prev_net
+       prev_net = int(row[1])
+       net_change_list += [net_change] 
+       months_change += [row[0]]
     
-    def average(datachange):
-        sum_pl = 0
-        length = len(datachange)
-        print(length)
-        for x in datachange:
-            sum_pl = sum_pl + x
-        print(sum_pl)
-        return sum_pl / length
+    # Calculate the greatest increase
+    if net_change > inc_chg[1]:
+        inc_chg[0] = row[0]
+        inc_chg[1] = net_change
 
+    # Calculate the greatest decrease
+    if net_change < dec_chg[1]:
+        dec_chg[0] = row[0]
+        dec_chg[1] = net_change
+    # Calculate the average net change
+    net_monthly_avg = sum(net_change_list) / len(net_change_list)
 
+# Generate output Summary
+output_summary = (
+    f"Financial Analysis\n"
+    f"--------------\n"
+    f"Total Months: {tot_months}\n"
+    f"Total Profits: {tot_profits}\n"
+    f"Average Change: ${net_monthly_avg:.2f}\n"
+    f"Greatest Increase in Profits: {inc_chg[0]} (${inc_chg[1]})\n"
+    f"Greatest Decrease in Profits: {dec_chg[0]} (${dec_chg[1]}\n"
+)
+
+print(output_summary)
        
         
-    print(f'Total Months: {months}') 
-
-    print(f'Total Profits: {tot_profits}')    
-    print(f'Average Change: {average(pl_chg)} ')    
-    print(f'Greatest Increase in Profits: ')  
-    print(f'Greatest Decrease in Profits: ')  
-
-
-
-
-    
-    
+ 
     
 
-# output_file = os.path.join("Analysis")
+output_file = os.path.join("budget_analysis.txt")
 
-# #  Open the output file
-# with open(output_file, "w", newline="") as datafile:
-#     writer = csv.writer(datafile)
-
-#     # Write the header row
-#     writer.writerow(["Election Results"])
-
-#     # Write in zipped rows
-#     writer.writerows()
+#  Open the output file
+with open(output_file, "w") as txt_file:
+    txt_file.write(output_summary)
